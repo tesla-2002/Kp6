@@ -2,7 +2,6 @@
 #include "passenger.h"
 #include "search.h"
 
-
 Passenger passenger_get_from_user (Passenger pass) {
 	printf ("Surname:\t");
 	fscanf(stdin, "%s", pass->surname); 
@@ -24,16 +23,16 @@ Passenger passenger_get_from_user (Passenger pass) {
 	return pass;
 }
 
-
 void passenger_add_to_txt (FILE* filetxt) {
 	Passenger pass = (Passenger)malloc(sizeof(*pass));
-	pass = passenger_get_from_user (pass);
-	fseek(filetxt, 0, SEEK_END);
+	pass = passenger_get_from_user(pass);
 	if (ftell(filetxt) != 0) {
 		fputc ('\n', filetxt);
 	}
+
 	passenger_write_txt(pass, filetxt);
     free(pass); 
+    rewind(filetxt);
 }
 
 void passenger_add_to_bin (FILE* filebin) {
@@ -41,21 +40,21 @@ void passenger_add_to_bin (FILE* filebin) {
 	pass = passenger_get_from_user(pass);
 	passenger_write_bin(pass, filebin);
     free(pass);
+    rewind(filebin);
 }
 
-void passenger_delete_from_txt (const char* filename, const char* sname, FILE* filetxt) {
+void passenger_delete_from_txt (const char* filename, const char* passname, FILE* filetxt) {
 	FILE* temp_file = fopen("temp_database.txt", "w");
     if (temp_file == NULL) {
-        printf("Error creating temporary file.");
+        printf("Ошибка в создании временного файла");
         return;
     }
 
     Passenger pass = (Passenger)malloc(sizeof(*pass));
-
-    int flag = 0; 
+    int flag = 0;
+    rewind(filetxt); 
     while (passenger_read_txt(pass,filetxt)) {
-    	
-        if (strncmp(pass->surname, sname, LEN_STR) == 0) {
+        if (strncmp(pass->surname, passname, LEN_STR) == 0) {
             flag = 1; 
             continue; 
         }
@@ -66,10 +65,11 @@ void passenger_delete_from_txt (const char* filename, const char* sname, FILE* f
 
         passenger_write_txt(pass,temp_file);
     }
+
     free(pass);
     fclose(temp_file);
     if (!flag) {
-        printf("Student '%s' was not found in file '%s'.\n", sname, filename);
+        printf("Студент '%s' не найден в файле'%s'.\n", passname, filename);
         return;
     }
     
@@ -77,39 +77,39 @@ void passenger_delete_from_txt (const char* filename, const char* sname, FILE* f
     int ren = rename("temp_database.txt", filename);
 
 	if (rem != 0) {
-        printf("Error removing file.");
+        printf("Ошибка в переименовании файла\n");
         return;
     }
+
     if (ren != 0) {
-        printf("Error renaming file.");
+        printf("Ошибка в переименовании файла\n");
         return;
     }
 }
 
-void passenger_delete_from_bin (const char* filename, const char* sname, FILE* filebin) {
+void passenger_delete_from_bin (const char* filename, const char* passname, FILE* filebin) {
 	FILE* temp_file = fopen("temp_database.bin", "w");
     if (temp_file == NULL) {
-        printf("Error creating temporary file.");
+        printf("Ошибка в создании временного файла");
         return;
     }
 
     Passenger pass = (Passenger)malloc(sizeof(*pass));
-
     int flag = 0; 
     rewind(filebin);
     while (passenger_read_bin(pass,filebin)) {
-    	
-        if (strncmp(pass->surname, sname, strlen(sname)) == 0) {
+        if (strncmp(pass->surname, passname, strlen(passname)) == 0) {
             flag = 1; 
             continue; 
         }
 
         passenger_write_bin(pass,temp_file);
     }
+
     free(pass);
     fclose(temp_file);
     if (!flag) {
-        printf("Student '%s' was not found in file '%s'.\n", sname, filename);
+        printf("Студент '%s' не найден в файле'%s'.\n", passname, filename);
         return;
     }
    
@@ -117,11 +117,12 @@ void passenger_delete_from_bin (const char* filename, const char* sname, FILE* f
     int ren = rename("temp_database.bin", filename);
 
 	if (rem != 0) {
-        printf("Error removing file.");
+        printf("Ошибка в переименовании файла\n");
         return;
     }
+
     if (ren != 0) {
-        printf("Error renaming file.");
+        printf("Ошибка в переименовании файла\n");
         return;
     }
 }
