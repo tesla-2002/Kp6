@@ -22,7 +22,6 @@ int main (int argc, char* argv[]) {
 
     free(pass);
     fclose(input);
-    fclose(output);
-    
+    fclose(output); 
     return 0;
 }
