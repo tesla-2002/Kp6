@@ -8,7 +8,6 @@ bool passenger_read_txt (Passenger pass, FILE* input) {
 		return true;
 
 	else return false;
-  	
 }
 
 void passenger_write_txt (Passenger pass, FILE* output) {
@@ -46,17 +45,36 @@ bool passenger_read_bin (Passenger pass, FILE* input) {
 	fread(&pass->transfer, sizeof(pass->transfer), 1, input) &&\
 	fread(&pass->children, sizeof(pass->children), 1, input))
 		return true;
+
 	else return false;
 }
 
-void passenger_print (Passenger* pass, int size) {
-	printf("_______________________________________________________________________________________\n");
-    printf("|        SURNAME          | I |   N   |   W   |        TO        |   TIME   | TR | CH |\n");
-    printf("_______________________________________________________________________________________\n");
-	for (int i = 0; i < size; i++) {
-		fprintf(stdout,"%s\t%s\t%d\t%d\t%s\t%d/%d/%d,%d:%d\t%d\t%d\n", pass[i]->surname, pass[i]->initials,\
-		pass[i]->luggage, pass[i]->weight, pass[i]->destination, pass[i]->time.day, pass[i]->time.month, pass[i]->time.year,\
-		pass[i]->time.hour, pass[i]->time.minute, pass[i]->transfer, pass[i]->children);
-	}
-	printf("_______________________________________________________________________________________\n");
+void passenger_print_from_bin (FILE* input) {
+	printf("____________________________________________________________________________________________\n");
+    printf("|      Surname      |Luggage| Weight |       To       |     Date/time     |  Trans  |  Ch  |\n");
+    printf("____________________________________________________________________________________________\n");
+    Passenger pass = (Passenger)calloc(1, sizeof(*pass));
+    while (passenger_read_bin(pass, input)) {
+    	fprintf(stdout, "%s %s\t\t%d\t%d\t%s\t\t%d/%d/%d,%d:%d\t\t%d\t%d\n", pass->surname, pass->initials,\
+	pass->luggage, pass->weight, pass->destination, pass->time.day,\
+	pass->time.month, pass->time.year, pass->time.hour, pass->time.minute, pass->transfer,pass->children);
+    }
+
+    free(pass);
+	printf("___________________________________________________________________________________________\n");
+}
+
+void passenger_print_from_txt (FILE* input) {
+	printf("____________________________________________________________________________________________\n");
+    printf("|      Surname      |Luggage| Weight |       To       |     Date/time     |  Trans  |  Ch  |\n");
+    printf("____________________________________________________________________________________________\n");
+    Passenger pass = (Passenger)calloc(1, sizeof(*pass));
+    while (passenger_read_txt(pass, input)) {
+    	fprintf(stdout, "%s %s\t\t%d\t%d\t%s\t\t%d/%d/%d,%d:%d\t\t%d\t%d\n", pass->surname, pass->initials,\
+	pass->luggage, pass->weight, pass->destination, pass->time.day,\
+	pass->time.month, pass->time.year, pass->time.hour, pass->time.minute, pass->transfer,pass->children);
+    }
+
+    free(pass);
+	printf("___________________________________________________________________________________________\n");
 }
