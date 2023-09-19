@@ -1,4 +1,8 @@
-#include "inout.h"
+//Курсовая работа. Задание №6. Вариант 39
+//Выполнил студент группы М8О-104Б-22
+//Тесля Данила Сергеевич
+
+#include "inout.h"        
 #include "passenger.h"
 #include "search.h"
 
