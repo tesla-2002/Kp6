@@ -14,15 +14,12 @@ int main (int argc, char* argv[]) {
 		printf("Не удалось открыть один из файлов\n");
 		exit(1);
 	}
-	int i = 0;
-    Passenger pass = (Passenger)calloc(1, sizeof(*pass));
 
+    Passenger pass = (Passenger)calloc(1, sizeof(*pass));
     while (passenger_read_txt(pass, input)) {
     	passenger_write_bin(pass, output);
-    	printf ("\n%d\n",i);
     }
 
-    
     free(pass);
     fclose(input);
     fclose(output);
