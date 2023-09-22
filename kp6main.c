@@ -9,7 +9,7 @@
 int main(int argc, char* argv[]) {
 	if (argc != 3) {
 		printf("Введите:\n%s ./file_txt ./file_bin\n", argv[0]);
-        exit(0);
+		exit(0);
 	}
 
 	FILE* filetxt = fopen(argv[1], "a+");
